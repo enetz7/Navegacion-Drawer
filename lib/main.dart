@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:navegacion/model/ListaNombres.dart';
 import 'package:navegacion/routes/pageRoute.dart';
 import 'fragments/contactPage.dart';
 import 'fragments/eventPage.dart';
@@ -17,6 +18,7 @@ class MyApp extends StatelessWidget {
    return MultiProvider(providers:
    [
      ChangeNotifierProvider(create: (context)=> Contador()),
+     ChangeNotifierProvider(create: (context)=>ListaNombres())
    ],
    child:MaterialApp(
      title: 'NavigationDrawer Demo',
