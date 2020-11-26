@@ -1,26 +1,42 @@
 import 'package:flutter/material.dart';
-import 'package:navegacion/model/Contador.dart';
 import 'package:navegacion/model/ListaNombres.dart';
 import 'package:navegacion/navigationDrawer/navigationDrawer.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 
 import 'package:provider/provider.dart';
-class eventPage extends StatelessWidget {
+
+class eventPage extends StatefulWidget {
+  eventPage({Key key}) : super(key: key);
+
+  @override
+  EventPageStage createState() => EventPageStage();
+}
+
+
+class EventPageStage extends State<eventPage>{
  static const String routeName = '/eventPage';
 
   List lista=[];
 
+  @override
   void initState() {
-    lista=loadData() as List;
+    super.initState();
+    changeList();
+  }
+
+  void changeList() async{
+      lista= await loadData();
+      setState(() {    
+      });
   }
 
   Future<List<dynamic>> loadData() async {
     final response =
-        await http.get('https://next.json-generator.com/api/json/get/NJV2XGl8E');
+        await http.get('https://randomuser.me/api/?results=20');
     if (response.statusCode == 200) {
       var jsonResponse = convert.jsonDecode(response.body);
-      return jsonResponse;
+      return jsonResponse['results'];
     }
     return null;
   }
@@ -29,8 +45,10 @@ class eventPage extends StatelessWidget {
  @override
  Widget build(BuildContext context) {
    final listNombres = Provider.of<ListaNombres>(context);
-   listNombres.setListaNombres(lista);
-   if(listNombres.listaNombres==null){
+   if(listNombres.listaNombres.length==0){
+    listNombres.listaNombres=lista;
+    }
+   if(listNombres.listaNombres==null){ 
     return new Scaffold(
         appBar: AppBar(
           title: Text("Events"),
@@ -38,19 +56,22 @@ class eventPage extends StatelessWidget {
         drawer: navigationDrawer(),
         body: Center(child: Text("Hey! this is events list page")));
     }else{
+      listNombres.setFavorites(lista.length);
       return new Scaffold(
         appBar: AppBar(
           title: Text("Events"),
         ),
         drawer: navigationDrawer(),
-        body: Center(child: 
+        body: SingleChildScrollView(child:Center(child: 
         Column(children: [
           for(int i=0;i<listNombres.listaNombres.length;i++)...{
             ListTile(
-              title: Text(listNombres.listaNombres[i]),
+              leading: FlutterLogo(),
+              title: Text(listNombres.listaNombres[i]['name']['first'],textAlign: TextAlign.center,),
+              trailing: Icon(Icons.star,color: listNombres.favorite[i],),onTap:()=> {listNombres.changeColor(Colors.yellow[600], i), listNombres.addNombresFavoritos(listNombres.listaNombres[i]['name']['first'])},
             )
           }
-        ],)));
+        ],))));
     }
  }
 }

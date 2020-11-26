@@ -21,6 +21,7 @@ class MyApp extends StatelessWidget {
      ChangeNotifierProvider(create: (context)=>ListaNombres())
    ],
    child:MaterialApp(
+     debugShowCheckedModeBanner: false,
      title: 'NavigationDrawer Demo',
      theme: new ThemeData(
        primarySwatch: Colors.blue,
