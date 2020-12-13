@@ -3,6 +3,7 @@ class User {
   String _nombre;
   User(this._nombre);
   User.fromMap(dynamic obj) {
+    print("Usuario entro");
     this._id = obj['id'];
     this._nombre = obj['nombre'];
   }
